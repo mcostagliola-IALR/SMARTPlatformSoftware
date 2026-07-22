@@ -1,0 +1,48 @@
+README for SelfScan.py
+
+About SelfScan
+--------------------------
+SelfScan is an enhanced version of the SMART Table running application, featuring the ability to 
+find plant coordinates and generate its own config.txt file based off of a pre-existing one.
+
+
+How to use SelfScan
+--------------------------
+1) Ensure that a config.txt already exists. The new generated one will have to reference it 
+to extract file location, camera number, and serial port id.
+
+2) Layout plants in an 4x4 grid, with around 12 inches of space between them. 
+If you have an alternate setup in mind or would like to use a different number of plants, 
+try and arrange them such that they make up a full grid.
+
+To prepare SelfScan for differently sized grids, the source code will need to be directly edited 
+in the function scanTable(). 
+Towards the beginning of this function, the numRows (short length) and numCols (long length) fields can be edited.
+
+WARNING: exceeding 8 rows and 4 columns risks the camera hitting going out of bounds and hitting a limit switch / table wall.
+At this point bounds checks are not implemented so it is best that the table be observed during runtime, and the user 
+is prepared to turn off the power source if things go awry.
+
+3) Run the program and select the Self Scan radio button in the GUI. 
+
+If you have the grid setup correctly and the color detection is correct, then the table should be able to handle the rest.
+However, it is still best if the user supervises runtime, just to be safe. The program has only been tested in select scenarios 
+and as such there is still a bit of undefined behaviour. Due to the inconsistent nature of photos, there may also be inconsistencies with finding the center.
+
+
+For further development
+--------------------------
+* Improve bounds checking during movements for and between plants. Could be improved by wiring in additional limit switches but 
+still better to have protocol other than complete termination.
+* Reduce inconsistencies between photos. Could use better masks.
+* Add in checks to handle when there is no plant visible at the beginning of SelfScan. 
+* Alter program so that table scans without set number of rows/cols, insteads scans until approaches bounds.
+* Improve coordinate finding system, could try to get them through OpenBuilds rather than track manually.
+* Ensure code works uniform across all tables. There have been undocumented issues with scale of movement 
+and interpreting coordinates on both tables, although as of writing this issue is not present on the working lab table. 
+Things we worked with was measuring out the actual movement and correlating it with the instructions to adjust the coords. 
+(For example if we sent move 3 inches and it moved 6, we would adjust the list of coords before writing)
+We also set the default grbl configuration on OpenBuilds to match for both tables, but the exact results are unclear. 
+Both files are locateded as text files in the folder, ready to be imported. Currently, grbl lab should be loaded onto both tables.
+* Standardize GCODE. New GCode files were developed for this project (move{direction}Sm.gc, move{direction}Big.gc)
+
